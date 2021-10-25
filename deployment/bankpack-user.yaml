@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bankpack-user
+  labels:
+    app: bankpack-user
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+        app: bankpack-user-svc
+  template:
+    metadata:
+      labels:
+        app: bankpack-user-svc
+    spec:
+      containers:
+      - name: bankpack-user
+        image: drache0311/bankpack-user:dev
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DB_SERVER
+          valueFrom:
+            configMapKeyRef:
+              name: bankpack-user-config
+              key: DB_SERVER
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: bankpack-user-config
+              key: DB_PORT
+        - name: DB_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: bankpack-user-config
+              key: DB_USERNAME
+        - name: DB_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: bankpack-user-config
+              key: DB_PASSWORD
+        - name: SERVLET_CONTEXT_PATH
+          valueFrom:
+            configMapKeyRef:
+              name: bankpack-user-config
+              key: SERVLET_CONTEXT_PATH

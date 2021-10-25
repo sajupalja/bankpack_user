@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.microservices.dao.SpendingAccountDao">
+
+   <!-- 나의 계좌내역 전체 조회  -->
+   <select id="selectSpendingAccountAll" parameterType="Integer" resultType="com.demo.microservices.model.SpendingAccountVO">
+
+		select ai.account_id
+		     , ai.bank_cd
+		     , ccd.cm_dtl_cd_nm as bank_name
+		     , ai.acnt_no
+		     , ai.acnt_name
+		     , ai.bal_amt
+		     , ai.use_yn
+		     , ai.user_id
+		  from acnt_info ai
+		       left outer join
+		       cm_cd_dtl ccd
+		       on ai.bank_cd = ccd.cm_dtl_cd and
+		       ccd.cm_cd = 'bank_cd'
+		 where ai.user_id = #{userId}
+   </select>
+
+   <!-- 나의 전체 예산 불러오기  -->
+   <select id="selectSpendingAccountBudget" parameterType="Integer" resultType="Integer">
+
+		select sum(bal_amt) as total_budget
+		  from acnt_info ai
+		 where ai.user_id = #{userId}
+		   and ai.use_yn = 'Y'
+   </select>
+
+   <!-- 나의 계좌내역 중 한개 상세조회  -->
+   <select id="selectSpendingAccount" parameterType="Integer" resultType="com.demo.microservices.model.SpendingAccountVO">
+
+		select ai.account_id
+		     , ai.bank_cd
+		     , ccd.cm_dtl_cd_nm as bank_name
+		     , ai.acnt_no
+		     , ai.acnt_name
+		     , ai.bal_amt
+		     , ai.use_yn
+		     , ai.user_id
+		  from acnt_info ai
+		       left outer join
+		       cm_cd_dtl ccd
+		       on ai.bank_cd = ccd.cm_dtl_cd and
+		       ccd.cm_cd = 'bank_cd'
+		 where ai.account_id = #{accountId}
+   </select>
+   
+   <!-- 계좌내역 등록 -->
+   <insert id="insertSpendingAccount" parameterType="com.demo.microservices.model.SpendingAccountVO">
+		
+		insert into acnt_info (
+			bank_cd
+		  , acnt_no
+		  , acnt_name
+		  , bal_amt
+		  , use_yn
+		  , user_id
+		  , process_yn
+		  , input_id
+		  , input_dt
+		  , modify_id
+		  , modify_dt
+		)
+		values (
+			#{bankCd}
+		  , #{acntNo}
+		  , #{acntName}
+		  , #{balAmt}
+		  , #{useYn}
+		  , #{userId}
+		  , #{process_yn}
+		  , #{userId}
+		  , now()
+		  , #{userId}
+		  , now()
+		)
+   </insert>
+   
+   <!-- 계좌내역 수정 -->
+   <update id="updateSpendingAccount" parameterType="com.demo.microservices.model.SpendingAccountVO">
+		update acnt_info
+		   set use_yn 		= #{useYn}
+			 , modify_id 	= #{userId}
+			 , modify_dt 	= now()
+       where account_id = #{accountId}
+   </update>
+   
+   <!-- 계좌내역 삭제 -->	
+   <delete id="deleteSpendingAccount" parameterType="Integer">
+ delete from acnt_info
+       where account_id = #{accountId}
+   </delete>
+
+
+</mapper>
