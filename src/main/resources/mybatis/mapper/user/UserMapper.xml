@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.microservices.dao.UserDao">
+   <select id="selectUserAll" resultType="com.demo.microservices.model.UserVO">
+      select user_id, 
+            user_name,
+            login_id
+      from usr_info
+   </select>
+
+   <select id="selectUser" parameterType="Integer" resultType="com.demo.microservices.model.UserVO">
+      select user_id,
+            user_name,
+        	login_id,
+        	ph_no
+        from usr_info
+       where user_id = #{userId}
+   </select>
+
+   <insert id="insertUser" parameterType="com.demo.microservices.model.UserVO">
+      insert into usr_info (
+         login_id,
+         login_pw,
+         user_name,
+         ph_no,
+         input_id,
+         input_dt,
+         modify_id,
+         modify_dt
+      ) values (
+         #{loginId},
+         #{loginPw},
+         #{userName},
+         #{phNo},
+         #{inputId},
+         #{inputDt},
+         #{modifyId},
+         #{modifyDt}
+      )
+   </insert>
+
+   <update id="updateUser" parameterType="com.demo.microservices.model.UserVO">
+      update usr_info
+         set login_pw = #{loginPw},
+         	 user_name = #{userName},
+             ph_no = #{phNo},
+             modify_id = #{modifyId},
+             modify_dt = #{modifyDt}
+       where user_id = #{userId}
+   </update>
+   
+   <delete id="deleteUser" parameterType="Integer">
+      delete usr_info
+       where user_id = #{userId}
+   </delete>
+   
+   <select id="login" parameterType="com.demo.microservices.model.UserVO" resultType="com.demo.microservices.model.UserVO">
+   	 select user_name,
+   	 		login_id,
+   	 		ph_no
+   	 from usr_info
+   	 where login_id = #{loginId} and login_pw = #{loginPw}
+   </select>
+</mapper>

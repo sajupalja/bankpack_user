@@ -22,11 +22,6 @@ spring:
 
 #MyBatis
 mybatis:
-    mapper-locations: classpath:mybatis/mapper/*.xml
+    mapper-locations: classpath:mybatis/mapper/user/*.xml
     configuration:
-        map-underscore-to-camel-case: true  
-
-garage:
-  product:
-    server: ${PRODUCT_SERVER:169.56.174.133}
-    port: ${PRODUCT_PORT:8081}
+        map-underscore-to-camel-case: true
